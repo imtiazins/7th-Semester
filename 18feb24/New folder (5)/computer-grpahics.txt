@@ -1,0 +1,599 @@
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   COMPUTER GRAPHICS  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+....................................................................(2 no)....................................................................
+
+
+#include<iostream.h>
+#include<graphics.h>
+ 
+void drawline(int x0, int y0, int x1, int y1)
+{
+    int dx, dy, p, x, y;
+ 
+dx=x1-x0;
+dy=y1-y0;
+ 
+x=x0;
+y=y0;
+ 
+p=2*dy-dx;
+ 
+while(x<x1)
+{
+if(p>=0)
+{
+putpixel(x,y,7);
+y=y+1;
+p=p+2*dy-2*dx;
+}
+else
+{
+putpixel(x,y,7);
+p=p+2*dy;
+}
+x=x+1;
+}
+}
+ 
+int main()
+{
+int gdriver=DETECT, gmode, error, x0, y0, x1, y1;
+initgraph(&gdriver, &gmode, "c:\\turboc3\\bgi");
+ 
+cout<<"Enter co-ordinates of first point: ";
+cin>>x0>>y0;
+ 
+cout<<"Enter co-ordinates of second point: ";
+cin>>x1>>y1;
+drawline(x0, y0, x1, y1);
+ 
+return 0;
+}
+
+
+................................................................................................................................................
+
+..................................................................(1 no)....................................................................
+
+
+#include <graphics.h>
+#include <iostream.h>
+#include <math.h>
+#include <dos.h>
+ 
+void main( )
+{
+float x,y,x1,y1,x2,y2,dx,dy,step;
+int i,gd=DETECT,gm;
+ 
+initgraph(&gd,&gm,"c:\\turboc3\\bgi");
+ 
+cout<<"Enter the value of x1 and y1 : ";
+cin>>x1>>y1;
+cout<<"Enter the value of x2 and y2: ";
+cin>>x2>>y2;
+ 
+dx=abs(x2-x1);
+dy=abs(y2-y1);
+ 
+if(dx>=dy)
+step=dx;
+else
+step=dy;
+ 
+dx=dx/step;
+dy=dy/step;
+ 
+x=x1;
+y=y1;
+ 
+i=1;
+while(i<=step)
+{
+putpixel(x,y,5);
+x=x+dx;
+y=y+dy;
+i=i+1;
+delay(100);
+}
+ 
+closegraph();
+}
+
+................................................................................................................................................
+
+.................................................................. (3 no) ...................................................................
+
+
+#include<iostream.h>
+#include<conio.h>
+#include<graphics.h>
+void drawCircle(int x, int y, int xc, int yc);
+void main()
+{
+	int gd = DETECT, gm;
+	int r, xc, yc, pk, x, y;
+	initgraph(&gd, &gm, "C:TCBGI");
+	cout<<"Enter the center co-ordinates\n";
+	cin>>xc>>yc;
+	cout<<"Enter the radius of circle\n";
+	cin>>r;
+	pk = 3 - 2*r;
+	x=0; y = r;
+	drawCircle(x,y,xc,yc);
+	while(x < y)
+	{
+		if(pk <= 0)
+		{
+			pk = pk + (4*x) + 6;
+			drawCircle(++x,y,xc,yc);
+		}
+		else
+		{
+			pk = pk + (4*(x-y)) + 10;
+			drawCircle(++x,--y,xc,yc);
+		}
+	}
+
+	getch();
+	closegraph();
+}
+
+void drawCircle(int x, int y, int xc, int yc)
+{
+	putpixel(x+xc,y+yc,GREEN);
+	putpixel(-x+xc,y+yc,GREEN);
+	putpixel(x+xc, -y+yc,GREEN);
+	putpixel(-x+xc, -y+yc, GREEN);
+	putpixel(y+xc, x+yc, GREEN);
+	putpixel(y+xc, -x+yc, GREEN);
+	putpixel(-y+xc, x+yc, GREEN);
+	putpixel(-y+xc, -x+yc, GREEN);
+}
+
+...........................................................................................................................................
+
+................................................................. (4 no) ....................................................................
+
+
+#include<iostream.h>
+#include<graphics.h>
+ 
+void drawcircle(int x0, int y0, int radius)
+{
+    int x = radius;
+    int y = 0;
+    int err = 0;
+ 
+    while (x >= y)
+    {
+putpixel(x0 + x, y0 + y, 7);
+putpixel(x0 + y, y0 + x, 7);
+putpixel(x0 - y, y0 + x, 7);
+putpixel(x0 - x, y0 + y, 7);
+putpixel(x0 - x, y0 - y, 7);
+putpixel(x0 - y, y0 - x, 7);
+putpixel(x0 + y, y0 - x, 7);
+putpixel(x0 + x, y0 - y, 7);
+ 
+if (err <= 0)
+{
+    y += 1;
+    err += 2*y + 1;
+}
+ 
+if (err > 0)
+{
+    x -= 1;
+    err -= 2*x + 1;
+}
+    }
+}
+ 
+int main()
+{
+int gdriver=DETECT, gmode, error, x, y, r;
+initgraph(&gdriver, &gmode, "c:\\turboc3\\bgi");
+ 
+cout<<"Enter radius of circle: ";
+cin>>r;
+ 
+cout<<"Enter co-ordinates of center(x and y): ";
+cin>>x>>y;
+drawcircle(x, y, r);
+ 
+return 0;
+}
+
+...............................................................................................................................................
+
+................................................................... (5 no) .................................................................
+
+
+// C++ program for implementing
+// Mid-Point Ellipse Drawing Algorithm
+#include <bits/stdc++.h>
+using namespace std;
+
+void midptellipse(int rx, int ry, 
+				int xc, int yc)
+{
+	float dx, dy, d1, d2, x, y;
+	x = 0;
+	y = ry;
+
+	// Initial decision parameter of region 1
+	d1 = (ry * ry) - (rx * rx * ry) + 
+					(0.25 * rx * rx);
+	dx = 2 * ry * ry * x;
+	dy = 2 * rx * rx * y;
+
+	// For region 1
+	while (dx < dy) 
+	{
+
+		// Print points based on 4-way symmetry
+		cout << x + xc << " , " << y + yc << endl;
+		cout << -x + xc << " , " << y + yc << endl;
+		cout << x + xc << " , " << -y + yc << endl;
+		cout << -x + xc << " , " << -y + yc << endl;
+
+		// Checking and updating value of
+		// decision parameter based on algorithm
+		if (d1 < 0)
+		{
+			x++;
+			dx = dx + (2 * ry * ry);
+			d1 = d1 + dx + (ry * ry);
+		}
+		else
+		{
+			x++;
+			y--;
+			dx = dx + (2 * ry * ry);
+			dy = dy - (2 * rx * rx);
+			d1 = d1 + dx - dy + (ry * ry);
+		}
+	}
+
+	// Decision parameter of region 2
+	d2 = ((ry * ry) * ((x + 0.5) * (x + 0.5))) + 
+		((rx * rx) * ((y - 1) * (y - 1))) -
+		(rx * rx * ry * ry);
+
+	// Plotting points of region 2
+	while (y >= 0)
+	{
+
+		// Print points based on 4-way symmetry
+		cout << x + xc << " , " << y + yc << endl;
+		cout << -x + xc << " , " << y + yc << endl;
+		cout << x + xc << " , " << -y + yc << endl;
+		cout << -x + xc << " , " << -y + yc << endl;
+
+		// Checking and updating parameter
+		// value based on algorithm
+		if (d2 > 0) 
+		{
+			y--;
+			dy = dy - (2 * rx * rx);
+			d2 = d2 + (rx * rx) - dy;
+		}
+		else
+		{
+			y--;
+			x++;
+			dx = dx + (2 * ry * ry);
+			dy = dy - (2 * rx * rx);
+			d2 = d2 + dx - dy + (rx * rx);
+		}
+	}
+}
+
+// Driver code
+int main()
+{
+	// To draw a ellipse of major and
+	// minor radius 15, 10 centered at (50, 50)
+	midptellipse(10, 15, 50, 50);
+
+	return 0;
+}
+
+// This code is contributed 
+// by Akanksha Rai
+
+
+...................................................................................................................................
+
+........................................................................ (6 no )............................................................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

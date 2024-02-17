@@ -1,0 +1,65 @@
+1.Verb dectection:
+
+%{
+    #include <stdio.h>
+%}
+  
+%%
+is|am|was|were|been {printf("%s is a verb\n",yytext);}
+[a-zA-Z}+ {printf("%s is not a verb\n",yytext);}
+
+%%
+
+int yywrap()
+{
+}
+int main()
+{
+    yylex();
+return 0;
+
+}
+
+
+2.Keyword:
+
+%{
+    #include <stdio.h>
+%}
+  
+%%
+const|final|break|else|for|do {printf("%s is a keyword\n",yytext);}
+[a-zA-Z}+ {printf("%s is not a keyword\n",yytext);}
+
+%%
+
+int yywrap()
+{
+}
+int main()
+{
+    yylex();
+return 0;
+}
+
+
+3.Punctuation symbol:
+%{
+    #include <stdio.h>
+%}
+  
+%%
+[,;'":.] {printf("%s is a punctuation\n",yytext);}
+[a-zA-Z}+ {printf("%s is not a punctuation\n",yytext);}
+
+%%
+
+int yywrap()
+{
+}
+int main()
+{
+    yylex();
+return 0;
+
+}
