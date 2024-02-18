@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Actions</title>
+    <style>
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #text_div {
+            margin-top: 30px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="button" onclick="changeText()">Change Text</button>
+        <button class="button" onclick="changeColor()">Change Color</button>
+        <button class="button" onclick="removeTag()">Remove Tag</button>
+        <button class="button" onmouseover="insertNewTag()">Insert New Tag (Mouse Over)</button>
+    </div>
+
+
+    <div id="text_div" class="container">
+        This is some initial text.
+    </div>
+
+
+    <script>
+        function changeText() {
+            var textDiv = document.getElementById("text_div");
+            textDiv.innerHTML = "Text changed!";
+        }
+
+
+        function changeColor() {
+            var textDiv = document.getElementById("text_div");
+            textDiv.style.color = "red";
+        }
+
+
+        function removeTag() {
+            var textDiv = document.getElementById("text_div");
+            var parent = textDiv.parentNode;
+            parent.removeChild(textDiv);
+        }
+
+
+        function insertNewTag() {
+            var newDiv = document.createElement("div");
+            newDiv.innerHTML = "New tag inserted!";
+            newDiv.style.fontSize = "20px";
+            newDiv.style.fontWeight = "bold";
+            newDiv.style.marginTop = "10px";
+            newDiv.style.color = "green";
+           
+            var container = document.querySelector(".container");
+            container.appendChild(newDiv);
+        }
+    </script>
+</body>
