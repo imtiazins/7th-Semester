@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Student Information Form</h2>
+    <form action="process.php" method="post">
+        <label for="name">Student Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="rollNumber">Roll Number:</label>
+        <input type="text" id="rollNumber" name="rollNumber" required>
+
+        <label for="subject1">Subject 1 Marks:</label>
+        <input type="number" id="subject1" name="subject1" min="0" max="100" required>
+
+        <label for="subject2">Subject 2 Marks:</label>
+        <input type="number" id="subject2" name="subject2" min="0" max="100" required>
+
+        <label for="subject3">Subject 3 Marks:</label>
+        <input type="number" id="subject3" name="subject3" min="0" max="100" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>
