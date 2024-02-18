@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 50px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>User Information</h2>
+    <form id="userInfoForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <label for="mobile">Mobile Number:</label>
+        <input type="text" id="mobile" name="mobile" pattern="\d{11}" title="Enter a valid 11-digit mobile number" required>
+
+        <p class="error" id="errorMessage"></p>
+
+        <button type="button" onclick="validateForm()">Submit</button>
+    </form>
+</div>
+
+<script>
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var address = document.getElementById('address').value;
+        var email = document.getElementById('email').value;
+        var gender = document.getElementById('gender').value;
+        var mobile = document.getElementById('mobile').value;
+
+        var errorMessage = '';
+
+        if (!name || !address || !email || !gender || !mobile) {
+            errorMessage = 'All fields are mandatory.';
+        } else if (!/\d{11}/.test(mobile)) {
+            errorMessage = 'Mobile number must be 11 digits.';
+        }
+
+        if (errorMessage) {
+            document.getElementById('errorMessage').innerText = errorMessage;
+        } else {
+            // Form is valid, you can proceed with further actions (e.g., submitting the form)
+            alert('Form submitted successfully!');
+            // Reset form
+            document.getElementById('userInfoForm').reset();
+            // Clear error message
+            document.getElementById('errorMessage').innerText = '';
+        }
+    }
+</script>
+
+</body>
+</html>
