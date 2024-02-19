@@ -1,0 +1,297 @@
+with input 
+
+1. 
+
+
+sum(X,Y):-
+S is X+Y,
+write(S).
+
+num(X,Y):-
+
+T is X*Y,
+write(T).
+
+
+
+
+input : 
+
+
+
+
+2. 
+
+list_sum([],0).
+list_sum([Head|Tail], Sum) :-
+   list_sum(Tail,SumTemp),
+   Sum is Head + SumTemp.
+
+
+input :
+
+list_sum([1, 2, 3, 4], Sum).
+
+
+sumlist([],0).
+sumlist([P|Q],N):-sumlist(Q,N1),N is N1+P.
+
+
+input :
+
+sumlist([1,2,3,4],N).
+
+
+
+3. 
+
+compare_char_string(Char, [Char | _]) :-
+    write('matched the first character').
+
+compare_char_string(Char, [FirstChar | _]) :-
+    Char \= FirstChar,
+    write('Does not match the first character.').
+
+compare_char_string(_, []) :-
+    write('The string is empty.').
+
+
+
+
+input : 
+compare_char_string(_, []).
+compare_char_string(a, [a, b, c]).
+
+
+4. 
+
+count(_, [], 0).
+count(X, [X | T], N) :-
+  !, count(X, T, N1),
+  N is N1 + 1.
+count(X, [_ | T], N) :-
+  count(X, T, N).
+
+
+input :
+
+count(a, [a, b, a, c, a], Count).
+
+count(x, [a, b, a, c, a], Count).
+
+
+
+5. 
+
+
+is_member(Element, List) :-
+    member(Element, List),
+    write(Element), write(' is a member of the list.').
+
+
+input :
+
+is_member(3, [1, 2, 3, 4, 5]).
+
+
+6. 
+
+list_concat([],L,L).
+list_concat([X1|L1],L2,[X1|L3]) :- list_concat(L1,L2,L3).
+
+list_rev([],[]).
+list_rev([Head|Tail],Reversed) :-
+   list_rev(Tail, RevTail),list_concat(RevTail, [Head],Reversed).
+
+
+
+input :
+
+list_concat([1, 2, 3], [4, 5, 6], Result).
+list_rev([1, 2, 3, 4], Reversed).
+
+
+
+7.
+
+
+                                                                          (Union Operation)
+
+list_member(X,[X|_]).
+list_member(X,[_|TAIL]) :- list_member(X,TAIL).
+
+list_union([X|Y],Z,W) :- list_member(X,Z),list_union(Y,Z,W).
+list_union([X|Y],Z,[X|W]) :- \+ list_member(X,Z), list_union(Y,Z,W).
+list_union([],Z,Z).
+
+
+
+                                                                         (Intersection Operation)
+
+
+list_member(X,[X|_]).
+list_member(X,[_|TAIL]) :- list_member(X,TAIL).
+
+list_intersect([X|Y],Z,[X|W]) :-
+   list_member(X,Z), list_intersect(Y,Z,W).
+list_intersect([X|Y],Z,W) :-
+   \+ list_member(X,Z), list_intersect(Y,Z,W).
+list_intersect([],Z,[])
+
+
+input:
+
+list_intersect([1, 2, 3], [3, 4, 5], IntersectionResult).
+
+list_union([1, 2, 3], [3, 4, 5], UnionResult).
+
+
+8.
+
+
+
+
+ gcd(A, 0, A) :- A > 0.
+gcd(A, B, G) :-
+    B > 0,
+    Rem is A mod B,
+    gcd(B, Rem, G).
+
+
+input :
+
+gcd(48, 18, Result).
+
+
+
+
+b1 : 
+
+
+se_module(library(clpfd)).
+
+four_queens(Board) :-
+    permutation([1,2,3,4], Board),
+    all_distinct(Board),
+    diagonal_attack(Board).
+
+diagonal_attack([]).
+diagonal_attack([Q|Qs]) :-
+    diagonal_attack(Q, Qs, 1),
+    diagonal_attack(Q, Qs, -1),
+    diagonal_attack(Qs).
+
+diagonal_attack(_, [], _).
+diagonal_attack(Q1, [Q2|Qs], D) :-
+    Q2 - Q1 #\= D,
+    Q1 - Q2 #\= D,
+    NextD is D + 1,
+    diagonal_attack(Q1, Qs, NextD).
+
+
+input:
+
+four_queens(Board).
+
+
+
+b3:
+
+move(1, From, To, _) :-
+    write('Move top disk from '), write(From), write(' to '), write(To), nl.
+move(N, From, To, Aux) :-
+    N > 1,
+    M is N - 1,
+    move(M, From, Aux, To),
+    move(1, From, To, _),
+    move(M, Aux, To, From).
+
+tower_of_hanoi(N) :-
+    move(N, 'peg A', 'peg C', 'peg B').
+
+
+input:
+
+tower_of_hanoi(3).
+
+
+b5:
+
+
+graph(a, [b, c]).
+graph(b, [a, d, e]).
+graph(c, [a, f]).
+graph(d, [b]).
+graph(e, [b, f]).
+graph(f, [c, e]).
+
+
+dfs(Start, Goal, Path) :-
+    dfs_helper(Start, Goal, [Start], Path).
+
+
+dfs_helper(Goal, Goal, Visited, [Goal|Visited]).
+
+
+dfs_helper(Current, Goal, Visited, Path) :-
+    graph(Current, Neighbors),
+    member(Next, Neighbors),
+    \+ member(Next, Visited), % Ensure we haven't visited this node before
+    dfs_helper(Next, Goal, [Next|Visited], Path).
+
+
+
+b6:
+
+
+graph(a, [b, c]).
+graph(b, [a, d, e]).
+graph(c, [a, f]).
+graph(d, [b]).
+graph(e, [b, f]).
+graph(f, [c, e]).
+
+
+bfs(Start, Goal, Path) :-
+    bfs_helper([[Start]], Goal, Path).
+
+
+bfs_helper([[Goal|Visited]|_], Goal, [Goal|Visited]).
+
+
+bfs_helper([[Current|Visited]|Rest], Goal, Path) :-
+    graph(Current, Neighbors),
+    findall([N, Current|Visited], (member(N, Neighbors), \+ member(N, Visited)), NewPaths),
+    append(Rest, NewPaths, UpdatedQueue),
+    bfs_helper(UpdatedQueue, Goal, Path).
+
+
+input :
+
+bfs(b, c, Path).
+bfs(a, f, Path).
+
+
+input 
+
+
+dfs(a, f, Path).
+dfs(b, c, Path).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
