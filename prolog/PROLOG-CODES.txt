@@ -1,0 +1,522 @@
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  (A SECTION)  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+................................................................. (1) ..........................................................................
+
+                                                                              (Addition)
+
+add(X, 0, X).
+add(X, Y, Z) :-
+    Y > 0,
+    Y1 is Y - 1,
+    add(X, Y1, Z1),
+    Z is Z1 + 1.
+
+                                                                             (Multiplication)
+
+
+multiply(_, 0, 0).
+multiply(X, 1, X).
+multiply(X, Y, Z) :-
+    Y > 0,
+    Y1 is Y - 1,
+    multiply(X, Y1, Z1),
+    Z is Z1 + X.
+
+
+.................................................................  (2) .........................................................................
+
+
+list_sum([],0).
+list_sum([Head|Tail], Sum) :-
+   list_sum(Tail,SumTemp),
+   Sum is Head + SumTemp.
+
+...............................................................................................................................................
+
+
+.................................................................. (3) ........................................................................
+
+compare_char_string(Char, [Char | _]) :-
+    write('matched the first character').
+
+compare_char_string(Char, [FirstChar | _]) :-
+    Char \= FirstChar,
+    write('Does not match the first character.').
+
+compare_char_string(_, []) :-
+    write('The string is empty.').
+................................................................................................................................................
+
+
+
+................................................................... (4) ......................................................................
+
+count(_, [], 0).
+count(X, [X | T], N) :-
+  !, count(X, T, N1),
+  N is N1 + 1.
+count(X, [_ | T], N) :-
+  count(X, T, N).
+
+
+................................................................................................................................................
+
+
+........................................................................ (5) ..................................................................
+
+
+is_member(Element, List) :-
+    member(Element, List),
+    write(Element), write(' is a member of the list.').
+
+
+................................................................................................................................................
+
+
+................................................................ (6) ..........................................................................
+
+
+list_concat([],L,L).
+list_concat([X1|L1],L2,[X1|L3]) :- list_concat(L1,L2,L3).
+
+list_rev([],[]).
+list_rev([Head|Tail],Reversed) :-
+   list_rev(Tail, RevTail),list_concat(RevTail, [Head],Reversed).
+
+................................................................................................................................................
+
+
+.................................................................... (7) ......................................................................
+
+                                                                          (Union Operation)
+
+list_member(X,[X|_]).
+list_member(X,[_|TAIL]) :- list_member(X,TAIL).
+
+list_union([X|Y],Z,W) :- list_member(X,Z),list_union(Y,Z,W).
+list_union([X|Y],Z,[X|W]) :- \+ list_member(X,Z), list_union(Y,Z,W).
+list_union([],Z,Z).
+
+
+
+                                                                         (Intersection Operation)
+
+
+list_member(X,[X|_]).
+list_member(X,[_|TAIL]) :- list_member(X,TAIL).
+
+list_intersect([X|Y],Z,[X|W]) :-
+   list_member(X,Z), list_intersect(Y,Z,W).
+list_intersect([X|Y],Z,W) :-
+   \+ list_member(X,Z), list_intersect(Y,Z,W).
+list_intersect([],Z,[])
+
+
+...............................................................................................................................................
+
+
+................................................................... (8) ......................................................................
+
+
+gcd(A, 0, A) :- A > 0.
+gcd(A, B, G) :-
+    B > 0,
+    Rem is A mod B,
+    gcd(B, Rem, G).
+
+................................................................................................................................................
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> (B-SECTION) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+..................................................................... (1) .....................................................................
+
+
+is_safe(_, []).
+is_safe(Row, [Col|Queens]) :-
+    % check if the queen in the previous row attacks this position
+    no_attack(Row, Col, Queens, 1),
+    % check for the next row
+    NextRow is Row + 1,
+    is_safe(NextRow, Queens).
+
+no_attack(_, _, [], _).
+no_attack(Row, Col, [QueenCol|OtherQueens], Offset) :-
+    % check if the new queen is in the same column or diagonal with the existing queen
+    Col =\= QueenCol,
+    Col + Offset =\= QueenCol,
+    Col - Offset =\= QueenCol,
+    % check for the next queen in the list
+    NewOffset is Offset + 1,
+    no_attack(Row, Col, OtherQueens, NewOffset).
+
+four_queens(QueenPositions) :-
+    permutation([1,2,3,4], QueenPositions),
+    is_safe(1, QueenPositions).
+
+
+
+..................................................................... (2) .....................................................................
+
+test(Plan):-
+    write('Initial state:'),nl,
+    Init= [at(tile4,1), at(tile3,2), at(tile8,3), at(empty,4), at(tile2,5), at(tile6,6), at(tile5,7), at(tile1,8), at(tile7,9)],
+    write_sol(Init),
+    Goal= [at(tile1,1), at(tile2,2), at(tile3,3), at(tile4,4), at(empty,5), at(tile5,6), at(tile6,7), at(tile7,8), at(tile8,9)],
+    nl,write('Goal state:'),nl,
+    write(Goal),nl,nl,
+    solve(Init,Goal,Plan).
+
+solve(State, Goal, Plan):-
+    solve(State, Goal, [], Plan).
+
+%Determines whether Current and Destination tiles are a valid move.
+is_movable(X1,Y1) :- (1 is X1 - Y1) ; (-1 is X1 - Y1) ; (3 is X1 - Y1) ; (-3 is X1 - Y1).
+
+
+
+solve(State, Goal, Plan, Plan):-
+    is_subset(Goal, State), nl,
+    write_sol(Plan).
+
+solve(State, Goal, Sofar, Plan):-
+    act(Action, Preconditions, Delete, Add),
+    is_subset(Preconditions, State),
+    \+ member(Action, Sofar),
+    delete_list(Delete, State, Remainder),
+    append(Add, Remainder, NewState),
+    solve(NewState, Goal, [Action|Sofar], Plan).
+
+
+act(move(X,Y,Z),
+    [at(X,Y), at(empty,Z), is_movable(Y,Z)],
+    [at(X,Y), at(empty,Z)],
+    [at(X,Z), at(empty,Y)]).
+
+
+
+
+is_subset([H|T], Set):-
+    member(H, Set),
+    is_subset(T, Set).
+is_subset([], _).
+
+
+delete_list([H|T], Curstate, Newstate):-
+    remove(H, Curstate, Remainder),
+    delete_list(T, Remainder, Newstate).
+delete_list([], Curstate, Curstate).
+
+remove(X, [X|T], T).
+remove(X, [H|T], [H|R]):-
+    remove(X, T, R).
+
+write_sol([]).
+write_sol([H|T]):-
+    write_sol(T),
+    write(H), nl.
+
+append([H|T], L1, [H|L2]):-
+    append(T, L1, L2).
+append([], L, L).
+
+member(X, [X|_]).
+member(X, [_|T]):-
+    member(X, T).
+
+................................................................................................................................................
+
+
+................................................................ (3) ..........................................................................
+
+
+move(1, From, To, _) :-
+    write('Move top disk from '), write(From), write(' to '), write(To), nl.
+move(N, From, To, Aux) :-
+    N > 1,
+    M is N - 1,
+    move(M, From, Aux, To),
+    move(1, From, To, _),
+    move(M, Aux, To, From).
+
+tower_of_hanoi(N) :-
+    move(N, 'peg A', 'peg C', 'peg B').
+
+................................................................................................................................................
+
+
+................................................................... (4) .......................................................................
+
+
+:- use_module(library(clpfd)).
+
+
+distance(a, b, 10).
+distance(a, c, 15).
+distance(a, d, 20).
+distance(b, c, 35).
+distance(b, d, 25).
+distance(c, d, 30).
+
+
+distance_between(City1, City2, Distance) :-
+    distance(City1, City2, Distance) ;
+    distance(City2, City1, Distance).
+
+
+tsp(Path, Cost) :-
+    % List of cities
+    Cities = [a, b, c, d],
+    
+    permutation(Cities, Path),
+    
+    Path = [Start | _],
+    append(Path, [Start], FullPath),
+    
+    calculate_distance(FullPath, Cost).
+
+
+calculate_distance([_], 0).
+calculate_distance([City1, City2 | Rest], TotalDistance) :-
+    distance_between(City1, City2, Distance),
+    calculate_distance([City2 | Rest], RestDistance),
+    TotalDistance #= Distance + RestDistance.
+
+................................................................................................................................................
+
+
+...................................................................... (5) ....................................................................
+
+graph(a, [b, c]).
+graph(b, [a, d, e]).
+graph(c, [a, f]).
+graph(d, [b]).
+graph(e, [b, f]).
+graph(f, [c, e]).
+
+
+dfs(Start, Goal, Path) :-
+    dfs_helper(Start, Goal, [Start], Path).
+
+
+dfs_helper(Goal, Goal, Visited, [Goal|Visited]).
+
+
+dfs_helper(Current, Goal, Visited, Path) :-
+    graph(Current, Neighbors),
+    member(Next, Neighbors),
+    \+ member(Next, Visited), % Ensure we haven't visited this node before
+    dfs_helper(Next, Goal, [Next|Visited], Path).
+
+................................................................................................................................................
+
+
+........................................................................... (6) ...............................................................
+
+graph(a, [b, c]).
+graph(b, [a, d, e]).
+graph(c, [a, f]).
+graph(d, [b]).
+graph(e, [b, f]).
+graph(f, [c, e]).
+
+
+bfs(Start, Goal, Path) :-
+    bfs_helper([[Start]], Goal, Path).
+
+
+bfs_helper([[Goal|Visited]|_], Goal, [Goal|Visited]).
+
+
+bfs_helper([[Current|Visited]|Rest], Goal, Path) :-
+    graph(Current, Neighbors),
+    findall([N, Current|Visited], (member(N, Neighbors), \+ member(N, Visited)), NewPaths),
+    append(Rest, NewPaths, UpdatedQueue),
+    bfs_helper(UpdatedQueue, Goal, Path).
+................................................................................................................................................
+
+
+
+................................................................... (7) .......................................................................
+
+
+landscape(a, 3).
+landscape(b, 2).
+landscape(c, 5).
+landscape(d, 1).
+landscape(e, 4).
+
+
+neighbors(a, [b, c]).
+neighbors(b, [a, c, d]).
+neighbors(c, [a, b, e]).
+neighbors(d, [b]).
+neighbors(e, [c]).
+
+
+hill_climbing(CurrentState, CurrentValue, FinalState, FinalValue) :-
+    best_neighbor(CurrentState, CurrentValue, NextState, NextValue),
+    hill_climbing(NextState, NextValue, FinalState, FinalValue).
+hill_climbing(State, Value, State, Value).
+
+
+best_neighbor(State, Value, BestNeighbor, BestValue) :-
+    neighbors(State, Neighbors),
+    best_neighbor_helper(Neighbors, Value, none, none, BestNeighbor, BestValue).
+
+best_neighbor_helper([], _, BestNeighbor, BestValue, BestNeighbor, BestValue).
+best_neighbor_helper([Neighbor|Rest], Value, CurrentBestNeighbor, CurrentBestValue, BestNeighbor, BestValue) :-
+    landscape(Neighbor, NeighborValue),
+    (NeighborValue > Value ->
+        (CurrentBestValue == none ;
+         NeighborValue > CurrentBestValue) ->
+            best_neighbor_helper(Rest, Value, Neighbor, NeighborValue, BestNeighbor, BestValue)
+        ;
+        best_neighbor_helper(Rest, Value, CurrentBestNeighbor, CurrentBestValue, BestNeighbor, BestValue)
+    ).
+
+
+................................................................................................................................................
+
+
+....................................................................... (8) ...................................................................
+
+
+% Empty board
+empty_board([
+    [_, _, _],
+    [_, _, _],
+    [_, _, _]
+]).
+
+% Display board
+display_board([Row1, Row2, Row3]) :-
+    write('   '), display_row(Row1), nl,
+    write('   '), display_row(Row2), nl,
+    write('   '), display_row(Row3), nl.
+
+display_row([A, B, C]) :-
+    write(' '), display_cell(A), write(' | '),
+    display_cell(B), write(' | '), display_cell(C), nl.
+
+display_cell(Cell) :-
+    var(Cell), !, write(' ').
+display_cell(Cell) :-
+    write(Cell).
+
+% X wins
+winner([ [X, X, X], _, _]) :- X \= ' '.
+winner([ _, [X, X, X], _]) :- X \= ' '.
+winner([ _, _, [X, X, X]]) :- X \= ' '.
+winner([ [X, _, _], [X, _, _], [X, _, _]]) :- X \= ' '.
+winner([ [_, X, _], [_, X, _], [_, X, _]]) :- X \= ' '.
+winner([ [_, _, X], [_, _, X], [_, _, X]]) :- X \= ' '.
+winner([ [X, _, _], [_, X, _], [_, _, X]]) :- X \= ' '.
+winner([ [_, _, X], [_, X, _], [X, _, _]]) :- X \= ' '.
+
+% O wins
+winner([ [O, O, O], _, _]) :- O \= ' '.
+winner([ _, [O, O, O], _]) :- O \= ' '.
+winner([ _, _, [O, O, O]]) :- O \= ' '.
+winner([ [O, _, _], [O, _, _], [O, _, _]]) :- O \= ' '.
+winner([ [_, O, _], [_, O, _], [_, O, _]]) :- O \= ' '.
+winner([ [_, _, O], [_, _, O], [_, _, O]]) :- O \= ' '.
+winner([ [O, _, _], [_, O, _], [_, _, O]]) :- O \= ' '.
+winner([ [_, _, O], [_, O, _], [O, _, _]]) :- O \= ' '.
+
+% Draw
+winner(Board) :- \+ member(' ', Board).
+
+% Player X moves
+move([Row|Rest], 1, [NewRow|Rest]) :- !, move_in_row(Row, 1, NewRow).
+
+% Player O moves
+move([Row|Rest], 2, [NewRow|Rest]) :- !, move_in_row(Row, 2, NewRow).
+
+move([Row|Rows], Line, [Row|NewRows]) :-
+    Line > 1,
+    NextLine is Line - 1,
+    move(Rows, NextLine, NewRows).
+
+move_in_row([C|Cs], 1, [x|Cs]) :- var(C), !.
+move_in_row([C|Cs], 1, [C|NewCs]) :- move_in_row(Cs, 1, NewCs).
+
+move_in_row([C|Cs], 2, [o|Cs]) :- var(C), !.
+move_in_row([C|Cs], 2, [C|NewCs]) :- move_in_row(Cs, 2, NewCs).
+
+
+play(Board, Player) :-
+    display_board(Board),
+    winner(Board),
+    !,
+    write('Game over. Winner: '),
+    (Player == 1 -> writeln('O') ; writeln('X')).
+play(Board, Player) :-
+    write('Player '),
+    (Player == 1 -> writeln('X\'s turn.') ; writeln('O\'s turn.')),
+    read(Position),
+    move(Board, Player, NewBoard),
+    (Player == 1 -> NextPlayer is 2 ; NextPlayer is 1),
+    play(NewBoard, NextPlayer).
+
+
+start :-
+    empty_board(Board),
+    play(Board, 1).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
